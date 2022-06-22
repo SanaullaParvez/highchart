@@ -33,6 +33,10 @@
             color: #fff;
             background-color: #ed1d24;
         }
+        .list-vertical {
+            height: 400px;
+            overflow-y: scroll;
+        }
     </style>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
@@ -410,7 +414,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-xs-12">
-                            <ul class="demo1">
+                            <ul class="list-vertical">
                                 <?php
                                 $json = file_get_contents('http://localhost/highchart/getData.php?links=4');
                                 $news_data = json_decode($json);
