@@ -26,7 +26,13 @@
             font-weight: 700;
             color: #ed1d24;
         }
-
+        .nav .nav-item .nav-link {
+            color: #000;
+        }
+        .nav .nav-item .nav-link.active {
+            color: #fff;
+            background-color: #ed1d24;
+        }
     </style>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"

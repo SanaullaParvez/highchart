@@ -61,9 +61,7 @@ function todaysValue(data, allSector) {
     }
     function calculateGainLoss(k){
         let gainLoss = [0,0,0]
-        // if (Object.keys(allSectorInstrumentGL).indexOf(val.INSTRUMENT) === -1) {
-        //     allSectorInstrumentGL[k] = [0,0,0];
-        // }
+
         if(allInstrumentGL[k] > 0)
             gainLoss[0] += 1;
         else if(allInstrumentGL[k] < 0)
@@ -73,8 +71,6 @@ function todaysValue(data, allSector) {
         return gainLoss;
     }
 
-    // console.log(allSector);
-    // console.log(allInstrument);
     let allSectorInstrument = [];
     Object.entries(allSector).forEach(setSectorInstrument)
     // Object.entries(allSector).forEach(([key, value]) => console.log(`${key}: ${value}`));
@@ -85,14 +81,6 @@ function todaysValue(data, allSector) {
         })
         allSectorInstrument[key] = parseFloat(parseFloat(sum).toFixed(1));
     }
-
-    // console.log(allSectorInstrument)
-    // console.log(Object.entries(allSectorInstrumentGL).map(([k,v]) => k))
-    // console.log(Object.entries(allSectorInstrumentGL).map(([k,v]) => v[1]))
-    // console.log(Object.entries(allSectorInstrumentGL).map(([k,v]) => v[2]))
-    // Object.entries(allSectorInstrumentGL).forEach(([k,v]) => {
-    //     console.log(`${k}: ${v}`);
-    // });
 
     const keysSorted = Object.keys(allSectorInstrument).sort((a, b) => allSectorInstrument[b] - allSectorInstrument[a]);
     const result = {};
@@ -136,7 +124,10 @@ function todaysValue(data, allSector) {
             //     name: 'Yesterday',
             //     data: [1216, 1001, 4436, 738, 40]
             // },
-        ]
+        ],
+        exporting: {
+            enabled: false
+        }
     });
     Highcharts.chart('container6', {
         chart: { type: "bar" },
@@ -160,7 +151,10 @@ function todaysValue(data, allSector) {
                 name: 'Unchanged',
                 data: Object.entries(allSectorInstrumentGL).map(([k,v]) => v[2])
             }
-        ]
+        ],
+        exporting: {
+            enabled: false
+        }
     });
 }
 function gainerLoserMeter(data) {
@@ -233,6 +227,9 @@ function gainerLoserMeter(data) {
                 colors: ["#61C46E", "#FF5A5A", "#00B0FF"],
             },
         },
+        exporting: {
+            enabled: false
+        },
         series: [{
             type: 'pie',
             name: 'Percentage',
@@ -246,47 +243,12 @@ function gainerLoserMeter(data) {
     });
 }
 Highcharts.getJSON('http://localhost/highchart/getData.php?links=1', function (data) {
-
-    // const data1 = [
-    //     {
-    //         "INDEXNAME": "DSES",
-    //         "INDEXVALUE": "1387.67740",
-    //         "INDEXCHANGE": "-7.15243",
-    //         "TIME": "6/14/2022 2:45:00 PM"
-    //     }
-    // ]
-    // const cats1 = cats2 = cats3 = {}
-    // data.filter(checkDate1).forEach((o) => cats1[getTime(o.TIME)] = 1);
-    // data.filter(checkDate2).forEach((o) => cats2[getTime(o.TIME)] = 1);
-    // data.filter(checkDate3).forEach((o) => cats3[getTime(o.TIME)] = 1);
-    //
-    // function checkDate1(val) {
-    //     var given_time = new Date(val['TIME']);
-    //     var given_date = given_time.getFullYear() + '-' + (given_time.getMonth() + 1) + '-' + given_time.getDate();
-    //     return (val['INDEXNAME'] == 'DSEX' && today_date() === given_date) ? true : false
-    // }
-    //
-    // function checkDate2(val) {
-    //     var given_time = new Date(val['TIME']);
-    //     var given_date = given_time.getFullYear() + '-' + (given_time.getMonth() + 1) + '-' + given_time.getDate();
-    //     return (val['INDEXNAME'] == 'DSES' && today_date() === given_date) ? true : false
-    // }
-    //
-    // function checkDate3(val) {
-    //     var given_time = new Date(val['TIME']);
-    //     var given_date = given_time.getFullYear() + '-' + (given_time.getMonth() + 1) + '-' + given_time.getDate();
-    //     return (val['INDEXNAME'] == 'DS30' && today_date() === given_date) ? true : false
-    // }
-    // const categories1 = Object.keys(cats1)
-    // const categories2 = Object.keys(cats2)
-    // const categories3 = Object.keys(cats3)
     function addZero(i) {
         if (i < 10) {
             i = "0" + i
         }
         return i;
     }
-
     function getTime(val) {
         let d = new Date(val);
         let h = addZero(d.getHours());
@@ -314,160 +276,49 @@ Highcharts.getJSON('http://localhost/highchart/getData.php?links=1', function (d
     let categories2 = series2.map(v => v[0]);
     let categories3 = series3.map(v => v[0]);
 
-    // console.log(categories1.sort(),series1)
-    // console.log(categories1,series1)
-    // console.log(series1.map(v => v[0]))
-    // console.log(categories2,series2)
-    // console.log(categories3,series3)
     Highcharts.chart('container1', {
-
-        chart: {type: "area", height: 350},
-        credits: {enabled: !1},
-        legend: {enabled: !1},
-        title: {
-            text: 'DSEX Index'
-        },
-        xAxis: {
-            categories: categories1
-        },
-        yAxis: {
-            title: {
-                text: ''
-            }
-        },
-        legend: {
+        chart: { type: "area", height: 350 },
+        credits: { enabled: !1 },
+        legend: { enabled: !1 },
+        yAxis: { title: { text: null } },
+        colors: ["pink"],
+        series: [
+            { threshold: null, data: series1, name: "Index", id: "Value" },
+        ],
+        exporting: {
             enabled: false
         },
-        plotOptions: {
-            area: {
-                fillColor: {
-                    linearGradient: {
-                        x1: 0,
-                        y1: 0,
-                        x2: 0,
-                        y2: 1
-                    },
-                    stops: [
-                        [0, '#F4BFCB'],
-                        [1, Highcharts.color('#F4BFCB').setOpacity(0.5).get('rgba')]
-                    ]
-                },
-                marker: {
-                    radius: 2
-                },
-                lineWidth: 1,
-                states: {
-                    hover: {
-                        lineWidth: 1
-                    }
-                },
-                threshold: null
-            }
-        },
-        series: [{
-            threshold: null,
-            name: 'Index',
-            data: series1
-        }]
+        title: { text: "" },
+        xAxis: { categories: categories1, type: "datetime" }
     });
     Highcharts.chart('container2', {
-        chart: {
-            zoomType: 'x'
-        },
-        title: {
-            text: 'DSES Index'
-        },
-        xAxis: {
-            categories: categories2
-        },
-        yAxis: {
-            title: {
-                text: ''
-            }
-        },
-        legend: {
+        chart: { type: "area", height: 350 },
+        credits: { enabled: !1 },
+        legend: { enabled: !1 },
+        yAxis: { title: { text: null } },
+        colors: ["pink"],
+        series: [
+            { threshold: null, data: series2, name: "Index", id: "Value" },
+        ],
+        exporting: {
             enabled: false
         },
-        plotOptions: {
-            area: {
-                fillColor: {
-                    linearGradient: {
-                        x1: 0,
-                        y1: 0,
-                        x2: 0,
-                        y2: 1
-                    },
-                    stops: [
-                        [0, Highcharts.getOptions().colors[0]],
-                        [1, Highcharts.color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
-                    ]
-                },
-                marker: {
-                    radius: 2
-                },
-                lineWidth: 1,
-                states: {
-                    hover: {
-                        lineWidth: 1
-                    }
-                },
-                threshold: null
-            }
-        },
-        series: [{
-            type: 'area',
-            name: 'Index',
-            data: series2
-        }]
+        title: { text: "" },
+        xAxis: { categories: categories2, type: "datetime" }
     });
     Highcharts.chart('container3', {
-        chart: {
-            zoomType: 'x'
-        },
-        title: {
-            text: 'DS30 Index'
-        },
-        xAxis: {
-            categories: categories3
-        },
-        yAxis: {
-            title: {
-                text: ''
-            }
-        },
-        legend: {
+        chart: { type: "area", height: 350 },
+        credits: { enabled: !1 },
+        legend: { enabled: !1 },
+        yAxis: { title: { text: null } },
+        colors: ["pink"],
+        series: [
+            { threshold: null, data: series3, name: "Index", id: "Value" },
+        ],
+        exporting: {
             enabled: false
         },
-        plotOptions: {
-            area: {
-                fillColor: {
-                    linearGradient: {
-                        x1: 0,
-                        y1: 0,
-                        x2: 0,
-                        y2: 1
-                    },
-                    stops: [
-                        [0, Highcharts.getOptions().colors[0]],
-                        [1, Highcharts.color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
-                    ]
-                },
-                marker: {
-                    radius: 2
-                },
-                lineWidth: 1,
-                states: {
-                    hover: {
-                        lineWidth: 1
-                    }
-                },
-                threshold: null
-            }
-        },
-        series: [{
-            type: 'area',
-            name: 'Index',
-            data: series3
-        }]
+        title: { text: "" },
+        xAxis: { categories: categories3, type: "datetime" }
     });
 });
