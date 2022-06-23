@@ -42,7 +42,7 @@ elseif ($_GET['links'] == 6) {
     //////////////////////**********************************////////////////////////////////
     require 'DBConnection.php';
     $sql = "SELECT stock,group_concat(price) price,group_concat(volume) volume
-            FROM dhcp.gainer_loser 
+            FROM gainer_loser 
             where DATE(created_date) = CURDATE() 
             group by stock";
     $result = $conn->query($sql);
@@ -122,7 +122,7 @@ elseif ($_GET['links'] == 6) {
 }elseif ($_GET['links'] == 'set_gl') {
     require 'DBConnection.php';
     $sql = "SELECT stock,group_concat(price) price,group_concat(volume) volume
-            FROM dhcp.gainer_loser 
+            FROM gainer_loser 
             where DATE(created_date) = CURDATE() 
             group by stock order by created_date ASC";
     $result = $conn->query($sql);

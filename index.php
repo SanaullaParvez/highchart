@@ -540,7 +540,7 @@
 </script>
 </body>
 </html>
-<!--CREATE TABLE `dhcp`.`gainer_loser` (-->
+<!--CREATE TABLE `gainer_loser` (-->
 <!--`id` INT NOT NULL,-->
 <!--`stock` VARCHAR(200) NOT NULL,-->
 <!--`price` FLOAT(10,2) NOT NULL,-->
