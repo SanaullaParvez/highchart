@@ -458,9 +458,13 @@
         for (let i = 1; i < 6; i++) {
             for (let j = 0; j < 10; j++) {
                 let id_name = 'gainerloser' + i + 'Price' + j;
-                let price_data = document.getElementById(id_name).getAttribute('data-price').split(',').map(element => {
-                    return Number(element);
-                });
+                let price_data = [];
+                if(document.getElementById(id_name) !== null){
+                    price_data = document.getElementById(id_name).getAttribute('data-price').split(',').map(element => {
+                        return Number(element);
+                    });
+
+
                 Highcharts.chart(id_name, {
                     chart: {
                         margin: [0, 0, 0, 0],
@@ -495,44 +499,47 @@
                         }
                     }
                 });
+                }
                 let volume_id_name = 'gainerloser' + i + 'Volume' + j;
-                let volume_data = document.getElementById(volume_id_name).getAttribute('data-volume').split(',').map(element => {
-                    return Number(element);
-                });
-                Highcharts.chart(volume_id_name, {
-                    chart: {
-                        margin: [0, 0, 0, 0],
-                        height: 50,
-                        style: {overflow: "visible"},
-                        colors: ["#FF5A5A"]
-                    },
-                    title: {text: ""},
-                    credits: {enabled: !1},
-                    legend: {enabled: !1},
-                    xAxis: {labels: {enabled: !1}, tickLength: 0},
-                    yAxis: {
-                        title: {text: null},
-                        labels: {enabled: !1},
-                        tickLength: 0,
-                    },
-                    series: [{
-                        fillColor: "rgba(124, 181, 236, 0.3)",
-                        type: "column",
-                        name: "Volume",
-                        data: volume_data
-                    }],
-                    exporting: {
-                        enabled: false
-                    },
-                    plotOptions: {
-                        series: {
-                            label: {
-                                connectorAllowed: false
-                            },
-                            pointStart: 1
+                if(document.getElementById(volume_id_name) !== null) {
+                    let volume_data = document.getElementById(volume_id_name).getAttribute('data-volume').split(',').map(element => {
+                        return Number(element);
+                    });
+                    Highcharts.chart(volume_id_name, {
+                        chart: {
+                            margin: [0, 0, 0, 0],
+                            height: 50,
+                            style: {overflow: "visible"},
+                            colors: ["#FF5A5A"]
+                        },
+                        title: {text: ""},
+                        credits: {enabled: !1},
+                        legend: {enabled: !1},
+                        xAxis: {labels: {enabled: !1}, tickLength: 0},
+                        yAxis: {
+                            title: {text: null},
+                            labels: {enabled: !1},
+                            tickLength: 0,
+                        },
+                        series: [{
+                            fillColor: "rgba(124, 181, 236, 0.3)",
+                            type: "column",
+                            name: "Volume",
+                            data: volume_data
+                        }],
+                        exporting: {
+                            enabled: false
+                        },
+                        plotOptions: {
+                            series: {
+                                label: {
+                                    connectorAllowed: false
+                                },
+                                pointStart: 1
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
         }
     });
@@ -540,10 +547,11 @@
 </script>
 </body>
 </html>
-<!--CREATE TABLE `gainer_loser` (-->
-<!--`id` INT NOT NULL,-->
-<!--`stock` VARCHAR(200) NOT NULL,-->
-<!--`price` FLOAT(10,2) NOT NULL,-->
-<!--`volume` INT(20) NOT NULL,-->
-<!--`time` DATETIME NOT NULL,-->
-<!--PRIMARY KEY (`id`));-->
+<!--CREATE TABLE `gainer_loser` (
+`id` int NOT NULL AUTO_INCREMENT,
+`stock` varchar(200) NOT NULL,
+`price` float(10,2) NOT NULL,
+`volume` int NOT NULL,
+`created_date` datetime NOT NULL,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb3;-->

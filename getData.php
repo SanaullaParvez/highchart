@@ -54,9 +54,10 @@ elseif ($_GET['links'] == 6) {
             $all_price[$row["stock"]] = $row["price"];
 //            echo "Stock: " . $row["stock"]. " - Price: " . $row["price"]. " Volume: " . $row["volume"]. "<br>";
         }
-    } else {
-        echo "0 results";
     }
+//    else {
+//        echo "0 results";
+//    }
     $conn->close();
     //////////////////////**********************************////////////////////////////////
     $all_news = [];
@@ -85,8 +86,16 @@ elseif ($_GET['links'] == 6) {
         $all_gl['Value'] = $gl->{'TOTALVALUE(MN)'};
         $all_gl['Volume'] = $gl->TOTALVOLUME;
         $all_gl['Trade'] = $gl->TOTALTRADES;
-        $all_gl['Price'] = $all_price[$gl->INSTRUMENT];//$gl->OPENPRICE;
-        $all_gl['Volumes'] = $all_volumn[$gl->INSTRUMENT];//$gl->TOTALVOLUME;
+        if(array_key_exists($gl->INSTRUMENT, $all_price)){
+            $all_gl['Price'] = $all_price[$gl->INSTRUMENT];//$gl->OPENPRICE;
+        }else{
+            $all_gl['Price'] = 0;
+        }
+        if(array_key_exists($gl->INSTRUMENT, $all_volumn)){
+            $all_gl['Volumes'] = $all_volumn[$gl->INSTRUMENT];//$gl->TOTALVOLUME;
+        }else{
+            $all_gl['Volumes'] = 0;
+        }
 
 //        }
         array_push($all_news, $all_gl);
@@ -134,9 +143,10 @@ elseif ($_GET['links'] == 6) {
             $all_price[$row["stock"]] = $row["price"];
 //            echo "Stock: " . $row["stock"]. " - Price: " . $row["price"]. " Volume: " . $row["volume"]. "<br>";
         }
-    } else {
-        echo "0 results";
     }
+//    else {
+//        echo "0 results";
+//    }
     $conn->close();
 //    echo $all_volumn['BDAUTOCA'];
 //    print_r($all_volumn);

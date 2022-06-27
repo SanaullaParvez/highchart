@@ -15,6 +15,7 @@ function checkDate(val) {
     var given_time = new Date(val['TIME']);
     var given_date = given_time.getFullYear() + '-' + (given_time.getMonth() + 1) + '-' + given_time.getDate();
     return (today_date() === given_date) ? true : false
+    // return true
 }
 
 
@@ -261,6 +262,8 @@ Highcharts.getJSON('http://localhost/highchart/getData.php?links=1', function (d
     let series1 = [];
     let series2 = [];
     let series3 = [];
+    console.log(typeof data);
+    console.log(data);
     data.slice().reverse().forEach(pushData)
     function pushData(item, index) {
         if (checkDate(item)) {
