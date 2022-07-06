@@ -1,5 +1,5 @@
 <?php
-header("Access-Control-Allow-Origin: *");
+//header("Access-Control-Allow-Origin: *");
 // Read the JSON file
 
 $market_index = file_get_contents('http://i-trade.idlc.com/IDLCCapitalMarketDataService/CapMarketDataService.svc/MarketIndex/2022-06-06');
@@ -89,12 +89,12 @@ elseif ($_GET['links'] == 6) {
         if(array_key_exists($gl->INSTRUMENT, $all_price)){
             $all_gl['Price'] = $all_price[$gl->INSTRUMENT];//$gl->OPENPRICE;
         }else{
-            $all_gl['Price'] = 0;
+            $all_gl['Price'] = '';
         }
         if(array_key_exists($gl->INSTRUMENT, $all_volumn)){
             $all_gl['Volumes'] = $all_volumn[$gl->INSTRUMENT];//$gl->TOTALVOLUME;
         }else{
-            $all_gl['Volumes'] = 0;
+            $all_gl['Volumes'] = '';
         }
 
 //        }
