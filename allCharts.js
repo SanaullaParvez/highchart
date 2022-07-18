@@ -14,12 +14,18 @@ function today_date() {
 function checkDate(val) {
     var given_time = new Date(val['TIME']);
     var given_date = given_time.getFullYear() + '-' + (given_time.getMonth() + 1) + '-' + given_time.getDate();
-    return (today_date() === given_date) ? true : false
-    // return true
+    // return (today_date() === given_date) ? true : false
+    return true
 }
-
-
-Highcharts.getJSON('http://localhost/highchart/getData.php?links=5', function (data) {
+var hostname = window.location.origin;
+console.log(hostname)
+var market_index = hostname+'/highchart/getData.php?links=1';// 'http://i-trade.idlc.com/IDLCCapitalMarketDataService/CapMarketDataService.svc/MarketIndex/2022-06-06';
+var market_trade = 'http://i-trade.idlc.com/IDLCCapitalMarketDataService/CapMarketDataService.svc/MarketTrade/2022-06-06';
+var last_market_price = hostname+'/highchart/getData.php?links=3' //'http://i-trade.idlc.com/IDLCCapitalMarketDataService/CapMarketDataService.svc/MarketPrice';
+var market_news = 'http://i-trade.idlc.com/IDLCCapitalMarketDataService/CapMarketDataService.svc/MarketNews/2022-06-06';
+var company_wise_sector = hostname+'/highchart/getData.php?links=5' // 'http://i-trade.idlc.com/IDLCCapitalMarketDataService/CapMarketDataService.svc/CompanyWiseSector';
+// Get the SECTORNAME => INSTRUMENT =>
+Highcharts.getJSON(company_wise_sector, function (data) {
     let allSector = []
     data.forEach(setSector)
     function setSector(val) {
@@ -29,7 +35,9 @@ Highcharts.getJSON('http://localhost/highchart/getData.php?links=5', function (d
             allSector[val.SECTORNAME] = [val.INSTRUMENT]
         }
     }
-    Highcharts.getJSON('http://localhost/highchart/getData.php?links=3', function (data) {
+    // console.log(allSector); // BANK = ["ABBANK", "UTTARABANK", "PRIMEBANK", "IFIC", "BRACSCBOND", "SIBL", "SBACBANK", "FIRSTSBANK","UCB", "MERCANBANK", "SOUTHEASTB", "EXIMBANK", "EBL", "PREMIERBAN", "STANDBANKL", "TRUSTBANK", "DUTCHBANGL", "BRACBANK", "NRBCBANK", "DHAKABANK", "UNIONBANK", "ISLAMIBANK", "PUBALIBANK", "ONEBANKLTD", "NBL", "BANKASIA", "SHAHJABANK", "ICBIBANK", "CITYBANK", "RUPALIBANK", "NCCBANK", "JAMUNABANK", "MTB", "ALARABANK"]
+    // Get the INSTRUMENT => Data
+    Highcharts.getJSON(last_market_price, function (data) {
         gainerLoserMeter(data)
         todaysValue(data, allSector)
     })
@@ -41,7 +49,8 @@ function todaysValue(data, allSector) {
     data.forEach(setInstrument)
 
     function setInstrument(val) {
-        if (checkDate(val)){
+        if(val['LASTTRADEPRICE'] > 0){
+            // if (checkDate(val)){
             allInstrument[val.INSTRUMENT] = val["TOTALVALUE(MN)"];
 
             if(val["LASTTRADEPRICE"] > val["YESTARDAYCLOSEPRICE"])
@@ -50,6 +59,7 @@ function todaysValue(data, allSector) {
                 allInstrumentGL[val.INSTRUMENT] = -1;
             else
                 allInstrumentGL[val.INSTRUMENT] = 0;
+            // }
         }
     }
 
@@ -78,9 +88,12 @@ function todaysValue(data, allSector) {
     function setSectorInstrument([key, value]) {
         let sum = 0;
         value.forEach(k => {
-            sum += setAllInstrument(k);
+            sum += parseFloat(setAllInstrument(k));
         })
         allSectorInstrument[key] = parseFloat(parseFloat(sum).toFixed(1));
+        // if(key == 'BANK' ){
+        //     console.log(sum);
+        // }
     }
 
     const keysSorted = Object.keys(allSectorInstrument).sort((a, b) => allSectorInstrument[b] - allSectorInstrument[a]);
@@ -102,7 +115,7 @@ function todaysValue(data, allSector) {
     })
 
     // console.log(allSectorInstrumentGL)
-    // console.log('After Sorting')
+    // console.log(allSectorInstrument)
     Highcharts.chart('container5', {
         chart: {type: "bar"},
         colors: ["#00B0FF", "#6f6f6f"],
@@ -165,13 +178,15 @@ function gainerLoserMeter(data) {
     data.forEach(pushData)
 
     function pushData(item, index) {
-        if (checkDate(item)) {
+        if(item['LASTTRADEPRICE'] > 0){
+            // if (checkDate(item)) {
             if (item['LASTTRADEPRICE'] > item['YESTARDAYCLOSEPRICE'])
                 gainer++;
             else if (item['LASTTRADEPRICE'] < item['YESTARDAYCLOSEPRICE'])
                 loser++;
             else
                 unchanged++;
+            // }
         }
     }
 
@@ -243,7 +258,8 @@ function gainerLoserMeter(data) {
         }]
     });
 }
-Highcharts.getJSON('http://localhost/highchart/getData.php?links=1', function (data) {
+// DSEX => 'http://localhost/highchart/getData.php?links=1'
+Highcharts.getJSON(market_index, function (data) {
     function addZero(i) {
         if (i < 10) {
             i = "0" + i
@@ -262,18 +278,18 @@ Highcharts.getJSON('http://localhost/highchart/getData.php?links=1', function (d
     let series1 = [];
     let series2 = [];
     let series3 = [];
-    console.log(typeof data);
-    console.log(data);
+    // console.log(typeof data);
+    // console.log(data);
     data.slice().reverse().forEach(pushData)
     function pushData(item, index) {
-        if (checkDate(item)) {
+        // if (checkDate(item)) {
             if (item['INDEXNAME'] === 'DSEX')
                 series1.push([getTime(item['TIME']), parseFloat(item['INDEXVALUE'])]);
             else if (item['INDEXNAME'] === 'DSES')
                 series2.push([getTime(item['TIME']), parseFloat(item['INDEXVALUE'])]);
             else if (item['INDEXNAME'] === 'DS30')
                 series3.push([getTime(item['TIME']), parseFloat(item['INDEXVALUE'])]);
-        }
+        // }
     }
     let categories1 = series1.map(v => v[0]);
     let categories2 = series2.map(v => v[0]);

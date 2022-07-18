@@ -1,12 +1,11 @@
 <?php
-//header("Access-Control-Allow-Origin: *");
-// Read the JSON file
-
-$market_index = file_get_contents('http://i-trade.idlc.com/IDLCCapitalMarketDataService/CapMarketDataService.svc/MarketIndex/2022-06-06');
-$market_trade = file_get_contents('http://i-trade.idlc.com/IDLCCapitalMarketDataService/CapMarketDataService.svc/MarketTrade/2022-06-06');
-$last_market_price = file_get_contents('http://i-trade.idlc.com/IDLCCapitalMarketDataService/CapMarketDataService.svc/MarketPrice');
-$market_news = file_get_contents('http://i-trade.idlc.com/IDLCCapitalMarketDataService/CapMarketDataService.svc/MarketNews/2022-06-06');
-$company_wise_sector = file_get_contents('http://i-trade.idlc.com/IDLCCapitalMarketDataService/CapMarketDataService.svc/CompanyWiseSector');
+require 'curl_get_file_contents.php';
+$market_index = curl_get_file_contents('http://i-trade.idlc.com/IDLCCapitalMarketDataService/CapMarketDataService.svc/MarketIndex/2022-06-06');
+//$market_index = file_get_contents('http://i-trade.idlc.com/IDLCCapitalMarketDataService/CapMarketDataService.svc/MarketIndex/2022-06-06');
+$market_trade = curl_get_file_contents('http://i-trade.idlc.com/IDLCCapitalMarketDataService/CapMarketDataService.svc/MarketTrade/2022-06-06');
+$last_market_price = curl_get_file_contents('http://i-trade.idlc.com/IDLCCapitalMarketDataService/CapMarketDataService.svc/MarketPrice');
+$market_news = curl_get_file_contents('http://i-trade.idlc.com/IDLCCapitalMarketDataService/CapMarketDataService.svc/MarketNews/2022-06-06');
+$company_wise_sector = curl_get_file_contents('http://i-trade.idlc.com/IDLCCapitalMarketDataService/CapMarketDataService.svc/CompanyWiseSector');
 // Decode the JSON file
 //$json_data = json_decode($json,true);
 
@@ -23,14 +22,14 @@ elseif ($_GET['links'] == 4) {
     //$news_data = $json;
     //echo typeof()
     $all_news = [];
-    $today = strtotime(date('Y-m-d 00:00:00'));
+//    $today = strtotime(date('Y-m-d 00:00:00'));
     foreach ($news_data as $news) {
         $news_time = strtotime($news->NEWSTIME);
         //    if(date('d/m/y') == date('d/m/y', $news_time)){
-        if ($news_time > $today) {
+//        if ($news_time > $today) {
             //        $all_news[date('G:i:s', $news_time)] = [$news->INSTRUMENT,$news->NEWS];
             $all_news[$news->INSTRUMENT] = $news->NEWS;
-        }
+//        }
     }
     print_r(json_encode($all_news));
 } elseif ($_GET['links'] == 5)
@@ -43,7 +42,7 @@ elseif ($_GET['links'] == 6) {
     require 'DBConnection.php';
     $sql = "SELECT stock,group_concat(price) price,group_concat(volume) volume
             FROM gainer_loser 
-            where DATE(created_date) = CURDATE() 
+            -- where DATE(created_date) = CURDATE() 
             group by stock";
     $result = $conn->query($sql);
     $all_volumn = [];
@@ -122,7 +121,7 @@ elseif ($_GET['links'] == 6) {
     foreach ($gainer_loser as $gl) {
         $all_gl = [];
         $all_gl['INSTRUMENT'] = $gl->INSTRUMENT;
-        $all_gl['OPENPRICE'] = $gl->OPENPRICE;
+        $all_gl['OPENPRICE'] = $gl->LASTTRADEPRICE;
         $all_gl['TOTALVOLUME'] = $gl->TOTALVOLUME;
         $all_gl['TIME'] = $date = date('Y-m-d H:i:s', strtotime($gl->TIME));
         array_push($all_news, $all_gl);
